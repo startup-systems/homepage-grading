@@ -16,31 +16,31 @@ with open('./homepage_grade.csv', 'wb') as outfile:
             try:
                 response = urllib2.urlopen(website).read()
                 Res = 30
-            except:
+            except urllib2.HTTPError:
                 try:
                     website = 'https://' + username + '.github.io/startup-systems'
                     response = urllib2.urlopen(website).read()
                     print 'Wrong URL:', website
                     Res = 20
-                except:
+                except urllib2.HTTPError:
                     try:
                         website = 'https://' + username + '.github.io/'
                         response = urllib2.urlopen(website).read()
                         print 'Wrong URL:',website
                         Res = 20
-                    except:
+                    except urllib2.HTTPError:
                         try:
                             website = 'https://' + username + '.github.io/startup_system/'
                             response = urllib2.urlopen(website).read()
                             print 'Wrong URL:',website
                             Res = 20
-                        except:
+                        except urllib2.HTTPError:
                             try:
                                 website = 'https://' + username + '.github.io/startup-systems/helloworld'
                                 response = urllib2.urlopen(website).read()
                                 print 'Wrong URL:',website
                                 Res = 20
-                            except:
+                            except urllib2.HTTPError:
                                 Res = 0
                                 ID = 0
                                 Photo = 0
