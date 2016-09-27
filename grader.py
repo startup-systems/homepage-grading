@@ -21,25 +21,25 @@ with open('./homepage_grade.csv', 'wb') as outfile:
                     website = 'https://' + username + '.github.io/startup-systems'
                     response = urllib2.urlopen(website).read()
                     print 'Wrong URL:', website
-                    Res = 0
+                    Res = 20
                 except:
                     try:
                         website = 'https://' + username + '.github.io/'
                         response = urllib2.urlopen(website).read()
                         print 'Wrong URL:',website
-                        Res = 0
+                        Res = 20
                     except:
                         try:
                             website = 'https://' + username + '.github.io/startup_system/'
                             response = urllib2.urlopen(website).read()
                             print 'Wrong URL:',website
-                            Res = 0
+                            Res = 20
                         except:
                             try:
                                 website = 'https://' + username + '.github.io/startup-systems/helloworld'
                                 response = urllib2.urlopen(website).read()
                                 print 'Wrong URL:',website
-                                Res = 0
+                                Res = 20
                             except:
                                 Res = 0
                                 ID = 0
