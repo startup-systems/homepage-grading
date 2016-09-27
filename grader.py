@@ -2,6 +2,45 @@ import urllib2
 import csv
 import re
 
+
+def fetch():
+    """Returns the URL, the response, and the corresponding score."""
+
+    website = 'https://' + username + '.github.io/startup-systems/'
+    try:
+        response = urllib2.urlopen(website).read()
+        Res = 30
+    except urllib2.HTTPError:
+        try:
+            website = 'https://' + username + '.github.io/startup-systems'
+            response = urllib2.urlopen(website).read()
+            print 'Wrong URL:', website
+            Res = 20
+        except urllib2.HTTPError:
+            try:
+                website = 'https://' + username + '.github.io/'
+                response = urllib2.urlopen(website).read()
+                print 'Wrong URL:',website
+                Res = 20
+            except urllib2.HTTPError:
+                try:
+                    website = 'https://' + username + '.github.io/startup_system/'
+                    response = urllib2.urlopen(website).read()
+                    print 'Wrong URL:',website
+                    Res = 20
+                except urllib2.HTTPError:
+                    try:
+                        website = 'https://' + username + '.github.io/startup-systems/helloworld'
+                        response = urllib2.urlopen(website).read()
+                        print 'Wrong URL:',website
+                        Res = 20
+                    except urllib2.HTTPError:
+                        response = None
+                        Res = 0
+
+    return website, response, Res
+
+
 with open('./homepage_grade.csv', 'wb') as outfile:
     grader = csv.writer(outfile)
     grader.writerow(['netID', 'Total', 'username', 'Res', 'ID', 'Photo', 'Bio', 'CSS', 'GA'])
@@ -12,44 +51,17 @@ with open('./homepage_grade.csv', 'wb') as outfile:
             last_name = row[2]
             netID = row[3]
             username = row[4]
-            website = 'https://' + username + '.github.io/startup-systems/'
-            try:
-                response = urllib2.urlopen(website).read()
-                Res = 30
-            except urllib2.HTTPError:
-                try:
-                    website = 'https://' + username + '.github.io/startup-systems'
-                    response = urllib2.urlopen(website).read()
-                    print 'Wrong URL:', website
-                    Res = 20
-                except urllib2.HTTPError:
-                    try:
-                        website = 'https://' + username + '.github.io/'
-                        response = urllib2.urlopen(website).read()
-                        print 'Wrong URL:',website
-                        Res = 20
-                    except urllib2.HTTPError:
-                        try:
-                            website = 'https://' + username + '.github.io/startup_system/'
-                            response = urllib2.urlopen(website).read()
-                            print 'Wrong URL:',website
-                            Res = 20
-                        except urllib2.HTTPError:
-                            try:
-                                website = 'https://' + username + '.github.io/startup-systems/helloworld'
-                                response = urllib2.urlopen(website).read()
-                                print 'Wrong URL:',website
-                                Res = 20
-                            except urllib2.HTTPError:
-                                Res = 0
-                                ID = 0
-                                Photo = 0
-                                Bio = 0
-                                CSS = 0
-                                GA = 0
-                                Total = Res + ID + Photo + Bio + CSS + GA
-                                grader.writerow([netID, Total, username, Res, ID, Photo, Bio, CSS, GA])
-                                continue
+
+            website, response, Res = fetch()
+            if not response:
+                ID = 0
+                Photo = 0
+                Bio = 0
+                CSS = 0
+                GA = 0
+                Total = Res + ID + Photo + Bio + CSS + GA
+                grader.writerow([netID, Total, username, Res, ID, Photo, Bio, CSS, GA])
+                continue
 
             # External CSS
             try:
