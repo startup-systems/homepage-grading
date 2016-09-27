@@ -15,4 +15,6 @@ Grading script for the [personal homepage assignment](https://docs.google.com/do
     python2 grader.py
     ```
 
-1. View the results in `homepage_grade.csv`.
+1. View the results.
+    * `homepage_grade.csv` are the results for each student, broken down by each requirement.
+    * `cms_grades.csv` is the file to be uploaded to [CMS](https://cms.csuglab.cornell.edu/web/guest/).

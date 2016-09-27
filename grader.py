@@ -41,78 +41,86 @@ def fetch():
     return website, response, Res
 
 
-with open('./homepage_grade.csv', 'wb') as outfile:
-    grader = csv.writer(outfile)
-    grader.writerow(['netID', 'Total', 'username', 'Res', 'ID', 'Photo', 'Bio', 'CSS', 'GA'])
-    with open('./ResponseForm.csv', 'rb') as csvfile:
-        reader = csv.reader(csvfile, delimiter = ',')
-        for row in reader:
-            first_name = row[1]
-            last_name = row[2]
-            netID = row[3]
-            username = row[4]
+with open('./cms_grades.csv', 'wb') as cms_outfile:
+    cms_csv = csv.writer(cms_outfile)
+    # this matches the grading spreadsheet template provided by CMS
+    cms_csv.writerow(["NetID", "Grade", "Add Comments"])
 
-            website, response, Res = fetch()
-            if not response:
-                ID = 0
-                Photo = 0
-                Bio = 0
-                CSS = 0
-                GA = 0
-                Total = Res + ID + Photo + Bio + CSS + GA
-                grader.writerow([netID, Total, username, Res, ID, Photo, Bio, CSS, GA])
-                continue
+    with open('./homepage_grade.csv', 'wb') as outfile:
+        grader = csv.writer(outfile)
+        grader.writerow(['netID', 'Total', 'username', 'Res', 'ID', 'Photo', 'Bio', 'CSS', 'GA'])
 
-            # External CSS
-            try:
-                re.search('href=[\"\'].*\.css', response).group()
-                CSS = 20
-            except:
-                CSS = 0
-            # ID
-            try:
-                re.search(netID, response.lower()).group()
-                ID = 5
-            except:
-                ID = 0
+        with open('./ResponseForm.csv', 'rb') as csvfile:
+            reader = csv.reader(csvfile, delimiter = ',')
+            for row in reader:
+                first_name = row[1]
+                last_name = row[2]
+                netID = row[3]
+                username = row[4]
 
-            # Photo
-            try:
-                re.search('<img', response).group()
-                Photo = 20
-            except:
+                website, response, Res = fetch()
+                if not response:
+                    ID = 0
+                    Photo = 0
+                    Bio = 0
+                    CSS = 0
+                    GA = 0
+                    Total = Res + ID + Photo + Bio + CSS + GA
+                    grader.writerow([netID, Total, username, Res, ID, Photo, Bio, CSS, GA])
+                    continue
+
+                # External CSS
                 try:
-                    css_path = re.search('href=[\"\'](?!http).*\.css', response).group()
-                    css_file = re.search('".*\.css', css_path).group()[1:]
-                    css_url = website + css_file
-                    css_response = urllib2.urlopen(css_url).read()
-                    re.search('background-image: url', css_response).group()
+                    re.search('href=[\"\'].*\.css', response).group()
+                    CSS = 20
+                except:
+                    CSS = 0
+                # ID
+                try:
+                    re.search(netID, response.lower()).group()
+                    ID = 5
+                except:
+                    ID = 0
+
+                # Photo
+                try:
+                    re.search('<img', response).group()
                     Photo = 20
                 except:
-                    Photo = 0
+                    try:
+                        css_path = re.search('href=[\"\'](?!http).*\.css', response).group()
+                        css_file = re.search('".*\.css', css_path).group()[1:]
+                        css_url = website + css_file
+                        css_response = urllib2.urlopen(css_url).read()
+                        re.search('background-image: url', css_response).group()
+                        Photo = 20
+                    except:
+                        Photo = 0
 
-            # Bio
-            try:
-                re.search('%s' % first_name, response).group()
-                Bio = 5
-            except:
+                # Bio
                 try:
-                    re.search('%s' % last_name, response).group()
+                    re.search('%s' % first_name, response).group()
                     Bio = 5
                 except:
                     try:
-                        re.search('</p>', response).group()
+                        re.search('%s' % last_name, response).group()
                         Bio = 5
                     except:
-                        Bio = 0
+                        try:
+                            re.search('</p>', response).group()
+                            Bio = 5
+                        except:
+                            Bio = 0
 
-            # Google Analytics Check
-            try:
-                re.search('google-analytics.com/analytics.js', response).group()
-                GA = 20
-            except:
-                GA = 0
+                # Google Analytics Check
+                try:
+                    re.search('google-analytics.com/analytics.js', response).group()
+                    GA = 20
+                except:
+                    GA = 0
 
 
-            Total = Res + ID + Photo + Bio + CSS + GA
-            grader.writerow([netID, Total, username, Res, ID, Photo, Bio, CSS, GA])
+                Total = Res + ID + Photo + Bio + CSS + GA
+
+                cms_csv.writerow([netID, Total, ""])
+                grader.writerow([netID, Total, username, Res, ID, Photo, Bio, CSS, GA])
