@@ -122,5 +122,7 @@ with open('./cms_grades.csv', 'wb') as cms_outfile:
 
                 Total = Res + ID + Photo + Bio + CSS + GA
 
-                cms_csv.writerow([netID, Total, ""])
+                reasoning = "Site found, at correct address: {:d}/30. NetID: {:d}/5. Photo: {:d}/20. Bio: {:d}/5. CSS: {:d}/20. Google Analytics: {:d}/20.".format(Res, ID, Photo, Bio, CSS, GA)
+
+                cms_csv.writerow([netID, Total, reasoning])
                 grader.writerow([netID, Total, username, Res, ID, Photo, Bio, CSS, GA])
